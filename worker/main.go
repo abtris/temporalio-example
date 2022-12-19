@@ -21,6 +21,7 @@ func main() {
 
 	w.RegisterWorkflow(app.UpdaterWorkflow)
 	w.RegisterActivity(app.CheckHugoReleaseVersion)
+	w.RegisterActivity(app.GetCurrentDeployedVersion)
 
 	// Start listening to the Task Queue
 	err = w.Run(worker.InterruptCh())

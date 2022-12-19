@@ -8,16 +8,16 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type repository struct {
+type Repository struct {
 	Repo           string `toml:"repo"`
 	TargetFile     string `toml:"target_file"`
 	TargetVariable string `toml:"target_variable"`
 	Branch         string `toml:"branch"`
 }
 
-type config struct {
+type Config struct {
 	SourceRepoReleases string       `toml:"source_repo_releases"`
-	TargetRepository   []repository `toml:"target_repos"`
+	TargetRepository   []Repository `toml:"target_repos"`
 }
 
 type netlifyConfig struct {
@@ -33,8 +33,8 @@ type netlifyBuildEnvironment struct {
 	HugoVersion string `toml:"HUGO_VERSION"`
 }
 
-func ParseConfigFile(filepath string) (config, error) {
-	var conf config
+func ParseConfigFile(filepath string) (Config, error) {
+	var conf Config
 	if _, err := toml.DecodeFile(filepath, &conf); err != nil {
 		return conf, err
 	}
