@@ -1,6 +1,6 @@
-# hello-world-project-template-go
+# Temporal.io Example 
 
-This is the Hello World project which has all the basic files explained in our [Hello World Tutorial](https://learn.temporal.io/getting_started/go/hello_world_in_go/).
+- rewrite [hugo-netlify-autoupdater](https://github.com/abtris/hugo-netlify-autoupdater/) using [temporal](https://temporal.io) workflow engine.
 
 ## Instructions
 
