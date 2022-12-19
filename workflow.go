@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"
 )
 
@@ -21,8 +22,17 @@ type DeployResult struct {
 func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (int, error) {
 	var finalResult int
 	finalResult = 0
+
+	retryPolicy := &temporal.RetryPolicy{
+		InitialInterval:    15 * time.Second,
+		BackoffCoefficient: 2.0,
+		MaximumInterval:    time.Second * 60,
+		MaximumAttempts:    3, // development
+	}
+
 	options := workflow.ActivityOptions{
 		StartToCloseTimeout: time.Second * 5,
+		RetryPolicy:         retryPolicy,
 	}
 	ctx = workflow.WithActivityOptions(ctx, options)
 
