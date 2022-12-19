@@ -3,7 +3,7 @@ module temporalio-example/app
 go 1.16
 
 require (
-	github.com/BurntSushi/toml v0.4.1
+	github.com/BurntSushi/toml v1.2.1
 	github.com/google/go-github/v48 v48.2.0
 	github.com/hashicorp/go-version v1.6.0
 	go.temporal.io/sdk v1.19.0
