@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -174,8 +175,12 @@ func createPullRequest(ctx context.Context, client *github.Client,
 	return nil
 }
 
-func getRepoPath(path string) (owner, repo string) {
+func getRepoPath(path string) (owner, repo string, err error) {
 	paths := strings.Split(path, "/")
-
-	return paths[0], paths[1]
+	if len(paths) != 2 {
+		message := fmt.Sprintf("Wrong string missing parts. Owner: %s Repo: %s", owner, repo)
+		log.Printf(message)
+		return "", "", errors.New(message)
+	}
+	return paths[0], paths[1], nil
 }

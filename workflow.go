@@ -19,10 +19,11 @@ type DeployResult struct {
 }
 
 func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (int, error) {
+	var finalResult int
+	finalResult = 0
 	options := workflow.ActivityOptions{
 		StartToCloseTimeout: time.Second * 5,
 	}
-
 	ctx = workflow.WithActivityOptions(ctx, options)
 
 	var result HugoResult
@@ -33,16 +34,15 @@ func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (int, error) {
 		log.Fatalf("Missing or wrong config.toml - %v", err)
 	}
 	log.Printf("Source repo: %s\n", conf.SourceRepoReleases)
-	var finalResult int
-	finalResult = 0
 	for _, repository := range conf.TargetRepository {
 		var deployedResult DeployResult
-		err = workflow.ExecuteActivity(ctx, GetCurrentDeployedVersion, repository).Get(ctx, &deployedResult)
+		err = workflow.ExecuteActivity(ctx, CheckCurrentDeployedVersion, repository).Get(ctx, &deployedResult)
 		if deployedResult.deployVersion != result.hugoVersion {
 			var resultChild bool
-			childWorkflowOptions := workflow.ChildWorkflowOptions{}
-			ctx = workflow.WithChildOptions(ctx, childWorkflowOptions)
-			err = workflow.ExecuteChildWorkflow(ctx, DeployNewVersion, result, deployedResult, repository).Get(ctx, &resultChild)
+			err = workflow.ExecuteActivity(ctx, DeployNewVersion, result, deployedResult, repository).Get(ctx, &resultChild)
+			if err != nil {
+				return finalResult, err
+			}
 			finalResult += 1
 		}
 	}

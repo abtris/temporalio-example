@@ -36,15 +36,15 @@ func main() {
 	}
 
 	// Get the results
-	var hugoVersion string
-	err = we.Get(context.Background(), &hugoVersion)
+	var changes int
+	err = we.Get(context.Background(), &changes)
 	if err != nil {
 		log.Fatalln("unable to get Workflow result", err)
 	}
-	printResults(hugoVersion, we.GetID(), we.GetRunID())
+	printResults(changes, we.GetID(), we.GetRunID())
 }
 
-func printResults(hugoVersion string, workflowID, runID string) {
+func printResults(changes int, workflowID, runID string) {
 	fmt.Printf("\nWorkflowID: %s RunID: %s\n", workflowID, runID)
-	fmt.Printf("\n%s\n\n", hugoVersion)
+	fmt.Printf("\nChanges: %d\n\n", changes)
 }

@@ -12,7 +12,7 @@ import (
 
 var client *github.Client
 
-func CheckHugoReleaseVersion(ctx context.Context, sourceRepo string) (string, error) {
+func CheckHugoReleaseVersion(ctx context.Context) (string, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		return "", errors.New("Unauthorized: No token present")
@@ -25,7 +25,10 @@ func CheckHugoReleaseVersion(ctx context.Context, sourceRepo string) (string, er
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
 	client = github.NewClient(tc)
-	sourceOwner, sourceRepo := getRepoPath(sourceRepo)
+	sourceOwner, sourceRepo, err := getRepoPath(conf.SourceRepoReleases)
+	if err != nil {
+		return "", err
+	}
 	hugoVersion, releaseURL, releaseInfo, err := getCurrentHugoVersion(ctx, client, sourceOwner, sourceRepo)
 	log.Printf("releaseURL: %s\n", releaseURL)
 	log.Printf("releaseInfo: %s\n", releaseInfo)
@@ -35,8 +38,9 @@ func CheckHugoReleaseVersion(ctx context.Context, sourceRepo string) (string, er
 	return hugoVersion, nil
 }
 
-func GetCurrentDeployedVersion(ctx context.Context, result HugoResult, deployResult DeployResult, repository Repository) (DeployResult, error) {
+func CheckCurrentDeployedVersion(ctx context.Context, repository Repository) (DeployResult, error) {
 	token := os.Getenv("GITHUB_TOKEN")
+	deployResult := DeployResult{}
 	if token == "" {
 		return deployResult, errors.New("Unauthorized: No token present")
 	}
@@ -48,7 +52,10 @@ func GetCurrentDeployedVersion(ctx context.Context, result HugoResult, deployRes
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
 	client = github.NewClient(tc)
-	owner, repo := getRepoPath(repository.Repo)
+	owner, repo, err := getRepoPath(repository.Repo)
+	if err != nil {
+		return deployResult, err
+	}
 	deployVersion, deployContent, err := getCurrentDeployedVersion(ctx, client, owner, repo, repository.TargetFile, repository.Branch)
 	if err != nil {
 		return deployResult, err
@@ -74,7 +81,10 @@ func DeployNewVersion(ctx context.Context, result HugoResult, deployResult Deplo
 	client = github.NewClient(tc)
 
 	updatedContent := updateVersion(result.hugoVersion, deployResult.deployContent)
-	owner, repo := getRepoPath(repository.Repo)
+	owner, repo, err := getRepoPath(repository.Repo)
+	if err != nil {
+		return "", err
+	}
 	commitBranch := getCommitBranch(result.hugoVersion)
 	ref, newBranch, err := getRef(ctx, client, owner, repo, repository.Branch, commitBranch)
 	if err != nil {
