@@ -24,7 +24,12 @@ func main() {
 	}
 
 	// Start the Workflow
-	sourceRepo := "gohugoio/hugo"
+	conf, err := app.ParseConfigFile("config.toml")
+	if err != nil {
+		log.Fatalln("unable to parse config file")
+	}
+
+	sourceRepo := conf.SourceRepoReleases
 	we, err := c.ExecuteWorkflow(context.Background(), options, app.UpdaterWorkflow, sourceRepo)
 	if err != nil {
 		log.Fatalln("unable to complete Workflow", err)

@@ -17,7 +17,7 @@ func CheckHugoReleaseVersion(ctx context.Context, sourceRepo string) (string, er
 	if token == "" {
 		return "", errors.New("Unauthorized: No token present")
 	}
-	conf, err := parseConfigFile("config.toml")
+	conf, err := ParseConfigFile("config.toml")
 	if err != nil {
 		return "", err
 	}

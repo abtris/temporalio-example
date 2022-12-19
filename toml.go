@@ -33,7 +33,7 @@ type netlifyBuildEnvironment struct {
 	HugoVersion string `toml:"HUGO_VERSION"`
 }
 
-func parseConfigFile(filepath string) (config, error) {
+func ParseConfigFile(filepath string) (config, error) {
 	var conf config
 	if _, err := toml.DecodeFile(filepath, &conf); err != nil {
 		return conf, err
