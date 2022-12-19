@@ -1,9 +1,8 @@
-// @@@SNIPSTART hello-world-project-template-go-worker
 package main
 
 import (
-	"hello-world-temporal/app"
 	"log"
+	"temporalio-example/app"
 
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
@@ -18,9 +17,10 @@ func main() {
 	defer c.Close()
 
 	// This worker hosts both Workflow and Activity functions
-	w := worker.New(c, app.GreetingTaskQueue, worker.Options{})
-	w.RegisterWorkflow(app.GreetingWorkflow)
-	w.RegisterActivity(app.ComposeGreeting)
+	w := worker.New(c, app.UpdaterTaskQueue, worker.Options{})
+
+	w.RegisterWorkflow(app.UpdaterWorkflow)
+	w.RegisterActivity(app.CheckHugoReleaseVersion)
 
 	// Start listening to the Task Queue
 	err = w.Run(worker.InterruptCh())
@@ -28,5 +28,3 @@ func main() {
 		log.Fatalln("unable to start Worker", err)
 	}
 }
-
-// @@@SNIPEND

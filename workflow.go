@@ -1,4 +1,3 @@
-// @@@SNIPSTART hello-world-project-template-go-workflow
 package app
 
 import (
@@ -7,7 +6,7 @@ import (
 	"go.temporal.io/sdk/workflow"
 )
 
-func GreetingWorkflow(ctx workflow.Context, name string) (string, error) {
+func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (string, error) {
 	options := workflow.ActivityOptions{
 		StartToCloseTimeout: time.Second * 5,
 	}
@@ -15,9 +14,7 @@ func GreetingWorkflow(ctx workflow.Context, name string) (string, error) {
 	ctx = workflow.WithActivityOptions(ctx, options)
 
 	var result string
-	err := workflow.ExecuteActivity(ctx, ComposeGreeting, name).Get(ctx, &result)
+	err := workflow.ExecuteActivity(ctx, CheckHugoReleaseVersion, sourceRepo).Get(ctx, &result)
 
 	return result, err
 }
-
-// @@@SNIPEND

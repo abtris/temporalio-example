@@ -1,11 +1,10 @@
-// @@@SNIPSTART hello-world-project-template-go-start-workflow
 package main
 
 import (
 	"context"
 	"fmt"
-	"hello-world-temporal/app"
 	"log"
+	"temporalio-example/app"
 
 	"go.temporal.io/sdk/client"
 )
@@ -20,30 +19,27 @@ func main() {
 	defer c.Close()
 
 	options := client.StartWorkflowOptions{
-		ID:        "greeting-workflow",
-		TaskQueue: app.GreetingTaskQueue,
+		ID:        "hugo-netlify-updater-workflow",
+		TaskQueue: app.UpdaterTaskQueue,
 	}
 
 	// Start the Workflow
-	name := "World"
-	we, err := c.ExecuteWorkflow(context.Background(), options, app.GreetingWorkflow, name)
+	sourceRepo := "gohugoio/hugo"
+	we, err := c.ExecuteWorkflow(context.Background(), options, app.UpdaterWorkflow, sourceRepo)
 	if err != nil {
 		log.Fatalln("unable to complete Workflow", err)
 	}
 
 	// Get the results
-	var greeting string
-	err = we.Get(context.Background(), &greeting)
+	var hugoVersion string
+	err = we.Get(context.Background(), &hugoVersion)
 	if err != nil {
 		log.Fatalln("unable to get Workflow result", err)
 	}
-
-	printResults(greeting, we.GetID(), we.GetRunID())
+	printResults(hugoVersion, we.GetID(), we.GetRunID())
 }
 
-func printResults(greeting string, workflowID, runID string) {
+func printResults(hugoVersion string, workflowID, runID string) {
 	fmt.Printf("\nWorkflowID: %s RunID: %s\n", workflowID, runID)
-	fmt.Printf("\n%s\n\n", greeting)
+	fmt.Printf("\n%s\n\n", hugoVersion)
 }
-
-// @@@SNIPEND
