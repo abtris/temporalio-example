@@ -7,6 +7,17 @@ import (
 	"go.temporal.io/sdk/workflow"
 )
 
+type HugoResult struct {
+	hugoVersion string
+	releaseURL  string
+	releaseInfo string
+}
+
+type DeployResult struct {
+	deployVersion string
+	deployContent string
+}
+
 func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (int, error) {
 	options := workflow.ActivityOptions{
 		StartToCloseTimeout: time.Second * 5,
@@ -14,7 +25,7 @@ func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (int, error) {
 
 	ctx = workflow.WithActivityOptions(ctx, options)
 
-	var result string
+	var result HugoResult
 	err := workflow.ExecuteActivity(ctx, CheckHugoReleaseVersion, sourceRepo).Get(ctx, &result)
 
 	conf, err := ParseConfigFile("config.toml")
@@ -25,10 +36,13 @@ func UpdaterWorkflow(ctx workflow.Context, sourceRepo string) (int, error) {
 	var finalResult int
 	finalResult = 0
 	for _, repository := range conf.TargetRepository {
-		var deployedResult string
+		var deployedResult DeployResult
 		err = workflow.ExecuteActivity(ctx, GetCurrentDeployedVersion, repository).Get(ctx, &deployedResult)
-		if deployedResult != result {
-			// workflow.ExecuteChildWorkflow() - check result vs deployedResult and execute workflow for PR
+		if deployedResult.deployVersion != result.hugoVersion {
+			var resultChild bool
+			childWorkflowOptions := workflow.ChildWorkflowOptions{}
+			ctx = workflow.WithChildOptions(ctx, childWorkflowOptions)
+			err = workflow.ExecuteChildWorkflow(ctx, DeployNewVersion, result, deployedResult, repository).Get(ctx, &resultChild)
 			finalResult += 1
 		}
 	}
