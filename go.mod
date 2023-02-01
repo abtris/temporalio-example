@@ -9,5 +9,5 @@ require (
 	github.com/hashicorp/go-version v1.6.0
 	go.temporal.io/sdk v1.20.0
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/oauth2 v0.3.0
+	golang.org/x/oauth2 v0.4.0
 )
