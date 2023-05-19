@@ -129,7 +129,7 @@ func pushCommit(ctx context.Context, client *github.Client, owner, repo string,
 	// Create the commit using the tree.
 	date := time.Now()
 	author := &github.CommitAuthor{
-		Date:  &date,
+		Date:  &github.Timestamp{date},
 		Name:  &commiterName,
 		Email: &commiterEmail,
 	}
