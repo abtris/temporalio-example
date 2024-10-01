@@ -9,7 +9,7 @@ require (
 	github.com/google/go-github/v65 v65.0.0
 	github.com/hashicorp/go-version v1.7.0
 	go.temporal.io/sdk v1.29.1
-	golang.org/x/oauth2 v0.22.0
+	golang.org/x/oauth2 v0.23.0
 )
 
 require (
