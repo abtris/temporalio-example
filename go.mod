@@ -1,12 +1,12 @@
 module temporalio-example/app
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.24.1
 
 require (
 	github.com/BurntSushi/toml v1.4.0
-	github.com/google/go-github/v69 v69.2.0
+	github.com/google/go-github/v83 v83.0.0
 	github.com/hashicorp/go-version v1.7.0
 	go.temporal.io/sdk v1.33.0
 	golang.org/x/oauth2 v0.28.0
@@ -17,7 +17,7 @@ require (
 	github.com/facebookgo/clock v0.0.0-20150410010913-600d898af40a // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/mock v1.6.0 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/go-querystring v1.2.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0 // indirect
