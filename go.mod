@@ -5,7 +5,7 @@ go 1.24.0
 toolchain go1.26.0
 
 require (
-	github.com/BurntSushi/toml v1.4.0
+	github.com/BurntSushi/toml v1.6.0
 	github.com/google/go-github/v83 v83.0.0
 	github.com/hashicorp/go-version v1.7.0
 	go.temporal.io/sdk v1.33.0
