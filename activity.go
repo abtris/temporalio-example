@@ -24,7 +24,10 @@ func CheckHugoReleaseVersion(ctx context.Context) (string, error) {
 	log.Printf("Source repo: %s\n", conf.SourceRepoReleases)
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
-	client = github.NewClient(tc)
+	client, err = github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		return "", err
+	}
 	sourceOwner, sourceRepo, err := getRepoPath(conf.SourceRepoReleases)
 	if err != nil {
 		return "", err
@@ -51,7 +54,10 @@ func CheckCurrentDeployedVersion(ctx context.Context, repository Repository) (De
 	log.Printf("Source repo: %s\n", conf.SourceRepoReleases)
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
-	client = github.NewClient(tc)
+	client, err = github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		return deployResult, err
+	}
 	owner, repo, err := getRepoPath(repository.Repo)
 	if err != nil {
 		return deployResult, err
@@ -78,7 +84,10 @@ func DeployNewVersion(ctx context.Context, result HugoResult, deployResult Deplo
 	log.Printf("Source repo: %s\n", conf.SourceRepoReleases)
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(ctx, ts)
-	client = github.NewClient(tc)
+	client, err = github.NewClient(github.WithHTTPClient(tc))
+	if err != nil {
+		return "", err
+	}
 
 	updatedContent := updateVersion(result.hugoVersion, deployResult.deployContent)
 	owner, repo, err := getRepoPath(repository.Repo)

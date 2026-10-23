@@ -157,10 +157,10 @@ func createPullRequest(ctx context.Context, client *github.Client,
 	prSubject := fmt.Sprintf("[hugo-updater] Update Hugo to version %s", hugoVersion)
 	prDescription := fmt.Sprintf("%s\nMore details in %s\n\n%s", prSubject, releaseURL, releaseInfo)
 	baseBranch := branch
-	newPR := &github.NewPullRequest{
+	newPR := github.CreatePullRequest{
 		Title:               &prSubject,
-		Head:                &prBranch,
-		Base:                &baseBranch,
+		Head:                prBranch,
+		Base:                baseBranch,
 		Body:                &prDescription,
 		MaintainerCanModify: github.Bool(true),
 	}
