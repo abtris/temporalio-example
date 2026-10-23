@@ -91,9 +91,9 @@ func getRef(ctx context.Context, client *github.Client,
 		return nil, false, err
 	}
 	// create new branch
-	newRef := &github.Reference{
-		Ref:    github.String("refs/heads/" + commitBranch),
-		Object: &github.GitObject{SHA: baseRef.Object.SHA},
+	newRef := github.CreateRef{
+		Ref: "refs/heads/" + commitBranch,
+		SHA: baseRef.Object.GetSHA(),
 	}
 	ref, _, err = client.Git.CreateRef(ctx, owner, repo, newRef)
 	return ref, true, err
@@ -129,7 +129,7 @@ func pushCommit(ctx context.Context, client *github.Client, owner, repo string,
 	// Create the commit using the tree.
 	date := time.Now()
 	author := &github.CommitAuthor{
-		Date:  &github.Timestamp{date},
+		Date:  &github.Timestamp{Time: date},
 		Name:  &commiterName,
 		Email: &commiterEmail,
 	}
@@ -139,14 +139,14 @@ func pushCommit(ctx context.Context, client *github.Client, owner, repo string,
 		Tree:    tree,
 		Parents: []*github.Commit{parent.Commit},
 	}
-	newCommit, _, err := client.Git.CreateCommit(ctx, owner, repo, commit)
+	newCommit, _, err := client.Git.CreateCommit(ctx, owner, repo, *commit, nil)
 	if err != nil {
 		return err
 	}
 
 	// Attach the commit to the master branch.
-	ref.Object.SHA = newCommit.SHA
-	_, _, err = client.Git.UpdateRef(ctx, owner, repo, ref, false)
+	_, _, err = client.Git.UpdateRef(ctx, owner, repo, ref.GetRef(),
+		github.UpdateRef{SHA: newCommit.GetSHA(), Force: github.Ptr(false)})
 	return err
 }
 
@@ -179,7 +179,7 @@ func getRepoPath(path string) (owner, repo string, err error) {
 	paths := strings.Split(path, "/")
 	if len(paths) != 2 {
 		message := fmt.Sprintf("Wrong string missing parts. Owner: %s Repo: %s", owner, repo)
-		log.Printf(message)
+		log.Print(message)
 		return "", "", errors.New(message)
 	}
 	return paths[0], paths[1], nil
