@@ -8,7 +8,7 @@ require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/google/go-github/v93 v93.0.0
 	github.com/hashicorp/go-version v1.9.0
-	go.temporal.io/sdk v1.50.0
+	go.temporal.io/sdk v1.51.0
 	golang.org/x/oauth2 v0.38.0
 )
 
@@ -27,7 +27,7 @@ require (
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
-	go.temporal.io/api v1.63.5 // indirect
+	go.temporal.io/api v1.64.3 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
